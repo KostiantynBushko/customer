@@ -27,9 +27,9 @@ class FileModel(models.Model):
     is_dir = models.BooleanField()
     size = models.BigIntegerField(default=0)
 
-def create_path(path):
+def make_path(path):
     if os.name == 'nt':
-        path=path.replace('/','\\')
+        path=path.replace('/','\\').replace('\\\\','\\')
     else:
         path=path.replace('\\','/')
     return path
@@ -45,7 +45,7 @@ def ls(request):
     else:
         os.chdir(returnPath)
         return HttpResponse('Method not supported')
-    path=create_path(path)
+    path=make_path(path)
     print 'path = ' + path
 
     os.chdir(FILES_STORE_PATH)
@@ -103,6 +103,7 @@ def mkdir(request):
         os.chdir(currentPath)
         return HttpResponse('Method not supported')
 
+    path=make_path(path)
     try:
         os.chdir(FILES_STORE_PATH)
         print os.path.realpath(os.curdir)
@@ -143,6 +144,7 @@ def rmdir(request):
     fullPath = os.path.realpath(FILES_STORE_PATH) + '/'+ ROOT_FOLDER + '/' + request.user.username + '/'
     fullPath += path
     fullPath = fullPath.replace('//','/')
+    fullPath=make_path(fullPath)
     print 'delate  = ' + fullPath
 
     try:
@@ -192,14 +194,11 @@ def send_file(request):
         username = request.GET['username']
     else:
         username = request.user.username
-    print 'User name = ' + username
 
     path = FILES_STORE_PATH + '/' + ROOT_FOLDER + '/' + username + '/MEDIA/'
+    path=make_path(path)
     filename = path +  'image.png'
-    if os.name == 'nt':
-        path = path.replace("/","\\")
-    print path
-
+    print filename
     if not os.path.exists(filename):
         print 'No such file or directory'
         return HttpResponse('No such file or directorty')
