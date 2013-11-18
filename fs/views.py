@@ -15,7 +15,7 @@ from django.core.servers.basehttp import FileWrapper
 if os.name == 'nt':
     FILES_STORE_PATH = 'C:\\Users\\Saiber\\Desktop\\'
 else:
-    FILES_STORE_PATH = ''
+    FILES_STORE_PATH = '/Users/kbushko/Desktop/'
 ROOT_FOLDER = 'store'
 
 
@@ -31,7 +31,7 @@ def make_path(path):
     if os.name == 'nt':
         path=path.replace('/','\\').replace('\\\\','\\')
     else:
-        path=path.replace('\\','/')
+        path=path.replace('\\','/').replace('//','/')
     return path
 
 def ls(request):
@@ -207,6 +207,28 @@ def send_file(request):
     response = HttpResponse(wraper, content_type='*/*')
     response['Content-Length'] = os.path.getsize(filename)
     return response
+
+
+def get_file(request):
+    if not request.user.is_authenticated:
+        return HttpResponse('User is not authentication')
+    if 'file' in request.GET:
+        file_path = request.GET['file']
+    else:
+        return HttpResponse('No such file or directory')
+
+    path = FILES_STORE_PATH + '/' + ROOT_FOLDER + '/' + request.user.username + '/' + file_path
+    path=make_path(path)
+    print 'file path = ' + path
+    if not os.path.exists(path):
+        print 'No such file or directory'
+        return HttpResponse('No such file or directory')
+
+    print os.path.getsize(path)
+    wraper = FileWrapper(file(path))
+    responce=HttpResponse(wraper,content_type='application/octet-stream ')
+    responce['Content-Length']=os.path.getsize(path)
+    return responce
 
 
 def handle_uploaded_file(path,file):
