@@ -76,7 +76,11 @@ def ls(request):
     dirList = []
     files = os.listdir(os.curdir)
     for file in files:
-        f = FileModel(path=os.path.realpath(file).replace(relativePath,'').replace('\\', '/').replace(file,""), name=file, is_dir=os.path.isdir(file))
+        m_path=os.path.realpath(file).replace(relativePath,'').replace('\\', '/').replace(file,"",1)
+        m_path=m_path+'/'
+        m_path.replace('//','/')
+        print 'm_path = ' + m_path
+        f = FileModel(path=m_path, name=file, is_dir=os.path.isdir(file))
         if os.path.isfile(file):
             f.size = os.path.getsize(file)
             fileList.append(f)
