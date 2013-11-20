@@ -78,8 +78,7 @@ def ls(request):
     for file in files:
         m_path=os.path.realpath(file).replace(relativePath,'').replace('\\', '/').replace(file,"",1)
         m_path=m_path+'/'
-        m_path.replace('//','/')
-        print 'm_path = ' + m_path
+        m_path=m_path.replace('//','/')
         f = FileModel(path=m_path, name=file, is_dir=os.path.isdir(file))
         if os.path.isfile(file):
             f.size = os.path.getsize(file)
@@ -169,7 +168,8 @@ def load_image(request):
     file = request.FILES['file']
     print request.FILES['file'].name
 
-    path = FILES_STORE_PATH + '/' + ROOT_FOLDER + '/' + request.user.username
+    path=FILES_STORE_PATH + '/' + ROOT_FOLDER + '/' + request.user.username
+    path=path.replace('//','/')
     if os.name =='nt':
         path = path.replace("/","\\")
     if not os.path.exists(path):
