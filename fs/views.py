@@ -76,7 +76,7 @@ def ls(request):
     dirList = []
     files = os.listdir(os.curdir)
     for file in files:
-        m_path=os.path.realpath(file).replace(relativePath,'').replace('\\', '/').replace(file,"",1)
+        m_path=os.path.realpath(os.path.dirname(file)).replace(relativePath,'').replace('\\','/')
         m_path=m_path+'/'
         m_path=m_path.replace('//','/')
         f = FileModel(path=m_path, name=file, is_dir=os.path.isdir(file))
@@ -214,6 +214,7 @@ def send_file(request):
 
 
 def get_file(request):
+    print 'method [ get_file ]'
     if not request.user.is_authenticated:
         return HttpResponse('User is not authentication')
     if 'file' in request.GET:
