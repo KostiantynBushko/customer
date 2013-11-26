@@ -27,6 +27,7 @@ urlpatterns = patterns('',
 
     #message
     url(r'^send_message/$','message.views.send_message'),
+    url(r'^msg_list/$','message.views.message_list'),
 
     #fs
     url(r'^ls/$','fs.views.ls'),

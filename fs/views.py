@@ -19,7 +19,6 @@ else:
 ROOT_FOLDER = 'store'
 
 
-#os.path.abspath(os.path.dirname(__file__))
 
 class FileModel(models.Model):
     path = models.CharField(max_length=256)
