@@ -4,7 +4,7 @@ from django.core import serializers
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from message.models import Message
-from itertools import chain
+from django.db.models import Q
 
 def send_message(request):
     if not request.user.is_authenticated():
@@ -35,10 +35,7 @@ def message_list(request):
         return HttpResponse('User is not authenticated')
     recipient = request.GET['recipient']
     print recipient
-
-    msg_list_out = Message.objects.filter(username = request.user.username, sender=recipient)
-    msg_list_in = Message.objects.filter(username=recipient, sender=request.user.username)
-    msg_list = chain(msg_list_in, msg_list_out)
+    msg_list = Message.objects.filter(Q(username=request.user.username, sender=recipient) | Q(username=recipient, sender=request.user.username))
 
     print msg_list
     return HttpResponse(serializers.serialize('json',msg_list))
