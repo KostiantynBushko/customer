@@ -67,7 +67,6 @@ def create_user_services(request):
 
 
 def user_page(request):
-    print('Personal page [ user_page ]')
     print request.COOKIES
     if not request.user.is_authenticated():
         return HttpResponse('User is not authenticated')
@@ -79,7 +78,6 @@ def user_page(request):
 
 def home(request):
     print('Home page')
-    print request.COOKIES
     if not request.user.is_authenticated():
         return HttpResponse('User is not authenticated')
     else:
