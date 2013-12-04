@@ -1,14 +1,11 @@
 from django.db import models
-
+from django.contrib.auth.models import User
 # Create your models here.
 
-class MapPoint(models.Model):
+class Ride(models.Model):
     latitude = models.FloatField()
     longitude = models.FloatField()
     time = models.DateTimeField(auto_now_add=True)
-
-class Track(models.Model):
-    username = models.CharField(max_length=80)
-    track = models.ForeignKey(MapPoint)
-    start = models.DateTimeField(auto_now_add=True)
-    finish = models.DateTimeField()
+    accept = models.BooleanField(default=False)
+    driver = models.ForeignKey(User, related_name='driver')
+    customer = models.ForeignKey(User, related_name='customer')
