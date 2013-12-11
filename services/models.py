@@ -9,3 +9,8 @@ class Ride(models.Model):
     accept = models.BooleanField(default=False)
     driver = models.ForeignKey(User, related_name='driver')
     customer = models.ForeignKey(User, related_name='customer')
+
+
+class gcm_user_id(models.Model):
+    username = models.CharField(max_length=80)
+    gcm_id = models.TextField()

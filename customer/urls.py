@@ -24,6 +24,8 @@ urlpatterns = patterns('',
     url(r'^new_user/$','services.views.create_user_services'),
     url(r'^$','services.views.home'),
     url(r'^user_list/$','services.views.user_list'),
+    url(r'^set_gcm_id/$','services.views.set_gcm_reg_id'),
+
 
     #message
     url(r'^send_message/$','message.views.send_message'),
