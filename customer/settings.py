@@ -80,9 +80,9 @@ STATICFILES_DIRS = (
 )
 
 #Custom authentication user bacend
-###AUTHENTICATION_BACKENDS = (
-###    'customer.auth_backends.CustomUserModelBackend',
-###)
+#AUTHENTICATION_BACKENDS = (
+#    'customer.auth_backends.CustomUserModelBackend',
+#)
 
 
 # List of finder classes that know how to find static files in

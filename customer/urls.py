@@ -38,4 +38,5 @@ urlpatterns = patterns('',
     url(r'^upload/$','fs.views.load_image'),
     url(r'^load/$','fs.views.send_file'),
     url(r'^get_file/$','fs.views.get_file'),
+
 )

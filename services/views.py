@@ -10,7 +10,7 @@ from django.contrib.auth.models import User
 from services.models import gcm_user_id
 
 def login_services(request):
-    print('Login servise runing')
+    print('Services : login_services ')
     if request.method != 'POST':
         return HttpResponse('Only POST method is allowed!')
     username = request.POST['username']
@@ -104,7 +104,7 @@ def send_gcm(request):
     req = HttpRequest
     req.method='POST'
     req.path='https://android.googleapis.com/gcm/send'
-    #req.raw_post_data =
+
 
 def set_gcm_reg_id(request):
     if not request.user.is_authenticated:
