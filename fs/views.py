@@ -11,11 +11,12 @@ from django.core import serializers
 import shutil
 import sys
 from django.core.servers.basehttp import FileWrapper
+from customer.settings import FILES_STORE_PATH
 
-if os.name == 'nt':
-    FILES_STORE_PATH = 'C:\\Users\\Saiber\\Desktop\\'
-else:
-    FILES_STORE_PATH = '/Users/kbushko/Desktop/'
+#if os.name == 'nt':
+#    FILES_STORE_PATH = 'C:\\Users\\Saiber\\Desktop\\'
+#else:
+#    FILES_STORE_PATH = '/Users/kbushko/Desktop/'
 ROOT_FOLDER = 'store'
 
 

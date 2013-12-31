@@ -39,4 +39,10 @@ urlpatterns = patterns('',
     url(r'^load/$','fs.views.send_file'),
     url(r'^get_file/$','fs.views.get_file'),
 
+    #app store
+    url(r'^add_app/$','appstore.views.new_app'),
+    url(r'^app_list/$','appstore.views.app_list'),
+    url(r'^app_image/$','appstore.views.app_image'),
+    url(r'^get_app/$','appstore.views.get_app'),
+
 )

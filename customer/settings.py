@@ -6,6 +6,9 @@ TEMPLATE_DEBUG = DEBUG
 
 PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
 
+FILES_STORE_PATH = PROJECT_ROOT + '/'
+
+
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
 )
@@ -137,6 +140,7 @@ INSTALLED_APPS = (
     # 'django.contrib.admindocs',
     'message',
     'services',
+    'appstore',
 )
 
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.JSONSerializer'

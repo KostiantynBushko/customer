@@ -41,4 +41,3 @@ def message_list(request):
     return HttpResponse(serializers.serialize('json',msg_list))
 
 
-
