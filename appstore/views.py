@@ -13,11 +13,6 @@ from fs.views import FileModel
 from django.core.servers.basehttp import FileWrapper
 from customer.settings import FILES_STORE_PATH
 
-#if os.name == 'nt':
-#    FILES_STORE_PATH = 'C:\\Users\\Saiber\\Desktop\\'
-#else:
-#    FILES_STORE_PATH = '/Users/kbushko/Desktop/'
-
 APP_FOLDER = 'store/appstore'
 
 def make_path(path):
@@ -37,7 +32,7 @@ def new_app(request):
         description=request.GET['description']
     else:
         return HttpResponse('Method not supported')
-    app=AppStore(name=name,description=description,path=path(name))
+    app=AppStore(name=name,description=description,path=path(name),user=request.user.username)
     app.save()
     ob=[]
     ob.append(app)
@@ -45,7 +40,7 @@ def new_app(request):
     print ser
     return HttpResponse(ser, mimetype='application/data')
 
-
+########################################################################################################################
 def app_list(request):
     offset = int(request.GET['offset'])
     count = int(request.GET['limit'])
@@ -55,8 +50,7 @@ def app_list(request):
     print ser
     return HttpResponse(ser, mimetype='application/data')
 
-
-
+########################################################################################################################
 def app_image(request):
     if not request.user.is_authenticated:
         return HttpResponse('User is not authentication')
@@ -78,6 +72,7 @@ def app_image(request):
     response['Content-Length'] = os.path.getsize(filename)
     return response
 
+########################################################################################################################
 def get_app(request):
     print 'method [ get_file ]'
     if not request.user.is_authenticated:
@@ -90,17 +85,18 @@ def get_app(request):
     file_path = file_path + '/' + 'app.apk'
     path=make_path(file_path)
     print 'file path = ' + file_path
-    if not os.path.exists(path):
+    if not os.path.exists(file_path):
         print 'No such file or directory'
         return HttpResponse('No such file or directory')
 
-    print os.path.getsize(path)
-    wraper = FileWrapper(file(path))
+    print os.path.getsize(file_path)
+    wraper = FileWrapper(file(file_path))
     responce=HttpResponse(wraper,content_type='application/octet-stream ')
-    responce['Content-Length']=os.path.getsize(path)
+    responce['Content-Length']=os.path.getsize(file_path
+    )
     return responce
 
-
+########################################################################################################################
 def handle_uploaded_file(path,file):
     with open(path, 'wb+') as destination:
         for chunk in file.chunks():
