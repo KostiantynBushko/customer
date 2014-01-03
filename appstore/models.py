@@ -6,7 +6,12 @@ class AppStore(models.Model):
     name=models.CharField(max_length=80)
     path=models.CharField(max_length=256)
     description=models.CharField(max_length=256)
-    ur=models.URLField(default="http://www.android.com")
+    url=models.URLField(default="http://www.android.com")
+
+    packageName=models.CharField(max_length=255)
+    versionName=models.CharField(max_length=80)
+    versionCode=n=models.IntegerField(default=0)
+
     five_stars=models.BigIntegerField(default=0)
     four_stars=models.BigIntegerField(default=0)
     three_stars=models.BigIntegerField(default=0)

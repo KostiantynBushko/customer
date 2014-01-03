@@ -25,15 +25,29 @@ def make_path(path):
 
 def new_app(request):
     if request.method == 'POST':
-        name=request.POST['name']
+        name=request.POST['appName']
         description=request.POST['description']
+        url=request.POST['url']
+        packageName=request.POST['packageName']
+        versionName=request.POST['versionName']
+        versionCode=request.POST['versionCode']
     elif request.method == 'GET':
-        name=request.GET['name']
+        name=request.GET['appName']
         description=request.GET['description']
+        url=request.GET['url']
+        packageName=request.GET['packageName']
+        versionName=request.GET['versionName']
+        versionCode=request.GET['versionCode']
     else:
         return HttpResponse('Method not supported')
+
     app=AppStore(name=name,description=description,path=path(name),user=request.user.username)
+    app.versionCode=versionCode
+    app.versionName=versionName
+    app.packageName=packageName
+    app.url=url
     app.save()
+
     ob=[]
     ob.append(app)
     ser=serializers.serialize('json',ob)
