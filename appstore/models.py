@@ -10,7 +10,7 @@ class AppStore(models.Model):
 
     packageName=models.CharField(max_length=255)
     versionName=models.CharField(max_length=80)
-    versionCode=n=models.IntegerField(default=0)
+    versionCode=models.IntegerField(default=0)
 
     five_stars=models.BigIntegerField(default=0)
     four_stars=models.BigIntegerField(default=0)

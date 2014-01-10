@@ -44,5 +44,8 @@ urlpatterns = patterns('',
     url(r'^app_list/$','appstore.views.app_list'),
     url(r'^app_image/$','appstore.views.app_image'),
     url(r'^get_app/$','appstore.views.get_app'),
+    url(r'^upload_data/$','appstore.views.upload_data'),
+    url(r'^user_app_list$','appstore.views.app_list_by_user'),
+    url(r'^res_files$','appstore.views.get_res_files_list'),
 
 )
