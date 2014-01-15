@@ -50,7 +50,7 @@ def new_app(request):
     ob.append(app)
     ser=serializers.serialize('json',ob)
     print ser
-    return HttpResponse(ser, mimetype='application/data')
+    return HttpResponse(ser, mimetype='application/json')
 ########################################################################################################################
 def upload_data(request):
     print 'method [ Upload data ]'
@@ -82,7 +82,7 @@ def app_list(request):
     count = int(request.GET['limit'])
     #ser = serializers.serialize('json',AppStore.objects.all()[offset:offset+count], fields=('name', 'path', 'description','packageName'))
     ser = serializers.serialize('json',AppStore.objects.all()[offset:offset+count])
-    return HttpResponse(ser, mimetype='application/data')
+    return HttpResponse(ser, mimetype='application/json')
 
 ########################################################################################################################
 # return application image from app folder
@@ -127,7 +127,7 @@ def get_app(request):
 
     print os.path.getsize(file_path)
     wraper = FileWrapper(file(file_path))
-    responce=HttpResponse(wraper,content_type='application/octet-stream ')
+    responce=HttpResponse(wraper,content_type='application/octet-stream')
     responce['Content-Length']=os.path.getsize(file_path)
     return responce
 
@@ -137,11 +137,16 @@ def app_list_by_user(request):
     print 'method [ app_list_by_user ]'
     if not request.user.is_authenticated:
         return HttpResponse('User is not authenticated')
-    app=AppStore.objects.filter(user=request.user.username)
+
+    offset = int(request.GET['offset'])
+    count = int(request.GET['limit'])
+
+    app=AppStore.objects.filter(user=request.user.username)[offset:offset+count]
+    print serializers.serialize('json',app)
     return HttpResponse(serializers.serialize('json',app))
 
 ########################################################################################################################
-# Return list of files in resutce folder of application
+# Return list of files in resources folder of application
 def get_res_files_list(request):
     if request.method == 'POST':
         appName = request.POST['name']
@@ -160,6 +165,37 @@ def get_res_files_list(request):
 
     print serializers.serialize('json',d)
     return HttpResponse(serializers.serialize('json',d))
+########################################################################################################################
+# Rate the app
+def set_app_rating(request):
+    if not request.user.is_authenticated:
+        error=Error(message="User is not authentication")
+        return HttpResponse(serializers.serialize('json',error))
+
+    if request.method == 'POST':
+        name=request.POST['name']
+        rating=(int)(request.POST['rating'])
+    elif request.method == 'GET':
+        name=request.GET['name']
+        rating=(int)(request.GET['rating'])
+    else:
+        error=Error(message="Method not supported")
+    app=AppStore.objects.get(name=name)
+    if rating == 1:
+        app.one_stars += 1;
+    elif rating == 2:
+        app.two_stars += 1;
+    elif rating == 3:
+        app.three_stars += 1;
+    elif rating == 4:
+        app.four_stars += 1;
+    elif rating == 5:
+        app.five_stars += 1;
+    app.save()
+    d=[]
+    d.append(app)
+    print d
+    return HttpResponse(serializers.serialize('json',d),mimetype='application/json')
 
 ########################################################################################################################
 #

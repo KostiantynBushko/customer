@@ -47,5 +47,6 @@ urlpatterns = patterns('',
     url(r'^upload_data/$','appstore.views.upload_data'),
     url(r'^user_app_list$','appstore.views.app_list_by_user'),
     url(r'^res_files$','appstore.views.get_res_files_list'),
+    url(r'^rate_app$','appstore.views.set_app_rating'),
 
 )

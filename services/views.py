@@ -19,7 +19,9 @@ def login_services(request):
     if user is not None:
         if user.is_active:
             login(request,user)
-            return HttpResponse('User login success')
+            data = serializers.serialize('json',[request.user], fields=('username', 'first_name','last_name','email'))
+            print data
+            return HttpResponse(data,mimetype='application/json')
         else:
             return HttpResponse('Dissable account')
     else:
@@ -36,7 +38,9 @@ def check_user_services(request):
         print("User is not authenticated")
         return HttpResponse("Error")
     else:
-        return HttpResponse('Success')
+        data = serializers.serialize('json',[request.user], fields=('username', 'first_name','last_name','email'))
+        print data
+        return HttpResponse(data,mimetype='application/json')
 
 
 def create_user_services(request):
