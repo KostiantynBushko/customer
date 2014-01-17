@@ -7,6 +7,7 @@ import os
 from django.db import models
 from django.core.servers.basehttp import FileWrapper
 from customer.settings import FILES_STORE_PATH
+from django.core.exceptions import ObjectDoesNotExist
 
 APP_FOLDER = 'store/appstore'
 
@@ -31,12 +32,13 @@ def new_app(request):
         packageName=request.POST['packageName']
         versionName=request.POST['versionName']
         versionCode=request.POST['versionCode']
+        size=(long)(request.POST['sizeByte'])
     else:
         return HttpResponse('Method not supported')
 
     app = AppStore.objects.filter(name=name)
     if app:
-        return HttpResponse('Application alredi exist')
+        return HttpResponse(serializers.serialize('json',[Error(message='Application already exist')]),mimetype='application/json')
 
     app=AppStore(name=name,description=description,path=path(packageName),user=request.user.username)
     app.versionCode=versionCode
@@ -44,6 +46,7 @@ def new_app(request):
     app.packageName=packageName
     app.description=description
     app.url=url
+    app.size=size
     app.save()
 
     ob=[]
@@ -80,7 +83,6 @@ def upload_data(request):
 def app_list(request):
     offset = int(request.GET['offset'])
     count = int(request.GET['limit'])
-    #ser = serializers.serialize('json',AppStore.objects.all()[offset:offset+count], fields=('name', 'path', 'description','packageName'))
     ser = serializers.serialize('json',AppStore.objects.all()[offset:offset+count])
     return HttpResponse(ser, mimetype='application/json')
 
@@ -153,8 +155,7 @@ def get_res_files_list(request):
     elif request.method == 'GET':
         appName = request.GET['name']
     else:
-        error=Error(message='method not supported')
-        return HttpResponse(serializers.serialize('json',error))
+        return HttpResponse(serializers.serialize('json',[Error(message='method not supported')]),mimetype='application/json')
     d=[]
     try:
         app=AppStore.objects.get(name=appName)
@@ -162,15 +163,14 @@ def get_res_files_list(request):
     except AppStore.DoesNotExist:
         error=Error(message='Application does not exist')
         d.append(error)
-
     print serializers.serialize('json',d)
     return HttpResponse(serializers.serialize('json',d))
+
 ########################################################################################################################
 # Rate the app
 def set_app_rating(request):
     if not request.user.is_authenticated:
-        error=Error(message="User is not authentication")
-        return HttpResponse(serializers.serialize('json',error))
+        return HttpResponse(serializers.serialize('json',[Error(message="User is not authentication")]),mimetype='application/json')
 
     if request.method == 'POST':
         name=request.POST['name']
@@ -179,8 +179,12 @@ def set_app_rating(request):
         name=request.GET['name']
         rating=(int)(request.GET['rating'])
     else:
-        error=Error(message="Method not supported")
-    app=AppStore.objects.get(name=name)
+        return HttpResponse(serializers.serialize('json',[Error(message="Method not supported")]),mimetype='application/json')
+    try:
+        app=AppStore.objects.get(name=name)
+    except ObjectDoesNotExist:
+        return
+
     if rating == 1:
         app.one_stars += 1;
     elif rating == 2:
@@ -191,11 +195,34 @@ def set_app_rating(request):
         app.four_stars += 1;
     elif rating == 5:
         app.five_stars += 1;
+    total_count = app.five_stars + app.four_stars + app.three_stars + app.two_stars + app.one_stars;
+    total_rate = (app.five_stars * 5) + (app.four_stars * 4) + (app.three_stars * 3) + (app.two_stars * 2) + app.one_stars;
+    app.total_rating = (int)(total_rate / total_count)
     app.save()
-    d=[]
-    d.append(app)
-    print d
-    return HttpResponse(serializers.serialize('json',d),mimetype='application/json')
+    print [app]
+    return HttpResponse(serializers.serialize('json',[app]),mimetype='application/json')
+########################################################################################################################
+# Get appliaction rating
+def get_app_rating(request):
+    if not request.user.is_authenticated:
+        return HttpResponse(serializers.serialize('json',[Error(message='User is not authenticated')]),mimetype='application/json')
+    if request.method == 'POST':
+        appId=(int)(request.POST['appId'])
+    elif request.method == 'GET':
+        appId=(int)(request.GET['appId'])
+    else:
+        return HttpResponse(serializers.serialize('json',[Error(message='Method not supported')]),mimetype='application/json')
+    try:
+        app=AppStore.objects.get(pk=appId)
+    except ObjectDoesNotExist:
+        return HttpResponse(serializers.serialize('json',[Error(message='Object does not exist')]),mimetype='application/json')
+
+    rating = (int)((app.five_stars * 5) + (app.four_stars * 4) + (app.three_stars * 3) + (app.two_stars * 2) + app.one_stars)
+    print rating
+    class Rating(models.Model):
+        rating=models.IntegerField(default=0)
+
+    return HttpResponse(serializers.serialize('json',[Rating(rating=rating)]),mimetype='application/json')
 
 ########################################################################################################################
 #

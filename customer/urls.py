@@ -39,7 +39,7 @@ urlpatterns = patterns('',
     url(r'^load/$','fs.views.send_file'),
     url(r'^get_file/$','fs.views.get_file'),
 
-    #app store
+    #App Store
     url(r'^add_app/$','appstore.views.new_app'),
     url(r'^app_list/$','appstore.views.app_list'),
     url(r'^app_image/$','appstore.views.app_image'),
@@ -47,6 +47,8 @@ urlpatterns = patterns('',
     url(r'^upload_data/$','appstore.views.upload_data'),
     url(r'^user_app_list$','appstore.views.app_list_by_user'),
     url(r'^res_files$','appstore.views.get_res_files_list'),
+    #rating
+    url(r'^get_app_rating/$','appstore.views.get_app_rating'),
     url(r'^rate_app$','appstore.views.set_app_rating'),
 
 )
